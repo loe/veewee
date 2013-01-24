@@ -75,7 +75,6 @@ module Veewee
 
 
         def create_disks
-          puts definition.disks.inspect
           definition.disks.each do |disk|
             ui.info "Creating new harddrive of size #{disk[:size].to_i}, format #{disk[:format]}, variant #{disk[:variant]} "
 
