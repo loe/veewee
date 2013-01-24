@@ -84,8 +84,7 @@ module Veewee
           end
         end
 
-        def attach_disk_common(storagectl, device_number)
-          disk = definition.disks[device_number]
+        def attach_disk_common(storagectl, disk, port_number, device_number)
           place=get_vbox_home
           location=disk[:name]+"."+disk[:format].downcase
 
@@ -93,16 +92,16 @@ module Veewee
           ui.info "Attaching disk: #{location}"
 
           #command => "${vboxcmd} storageattach \"${vname}\" --storagectl \"SATA Controller\" --port 0 --device 0 --type hdd --medium \"${vname}.vdi\"",
-          command ="#{@vboxcmd} storageattach \"#{name}\" --storagectl \"#{storagectl}\" --port 0 --device #{device_number} --type hdd --medium \"#{location}\""
+          command ="#{@vboxcmd} storageattach \"#{name}\" --storagectl \"#{storagectl}\" --port #{port_number} --device #{device_number} --type hdd --medium \"#{location}\""
           shell_exec("#{command}")
         end
 
-        def attach_disk_ide(device_number)
-          self.attach_disk_common("IDE Controller", device_number)
+        def attach_disk_ide(disk, port_number=0, device_number=0)
+          self.attach_disk_common("IDE Controller", disk, port_number, device_number)
         end
 
-        def attach_disk_sata(device_number)
-          self.attach_disk_common("SATA Controller", device_number)
+        def attach_disk_sata(disk, port_number=0, device_number=0)
+          self.attach_disk_common("SATA Controller", disk, port_number, device_number)
         end
 
 

@@ -42,11 +42,11 @@ module Veewee
           if use_sata
             self.add_sata_controller
             definition.disks.each_with_index do |disk, i|
-              self.attach_disk_sata(0)
+              self.attach_disk_sata(disk, i, 0)
             end
           else
             definition.disks.each_with_index do |disk, i|
-              self.attach_disk_ide(i)
+              self.attach_disk_ide(disk, 0, i)
             end
           end
           self.attach_isofile(isofile_ide_device_number)
