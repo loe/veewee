@@ -74,19 +74,21 @@ module Veewee
         end
 
 
-        def create_disk
-            ui.info "Creating new harddrive of size #{definition.disk_size.to_i}, format #{definition.disk_format}, variant #{definition.disk_variant} "
-
+        def create_disks
+          puts definition.disks.inspect
+          definition.disks.each do |disk|
+            ui.info "Creating new harddrive of size #{disk[:size].to_i}, format #{disk[:format]}, variant #{disk[:variant]} "
 
             place=get_vbox_home
-            command ="#{@vboxcmd} createhd --filename \"#{File.join(place,name,name+"."+definition.disk_format.downcase)}\" --size \"#{definition.disk_size.to_i}\" --format #{definition.disk_format.downcase} --variant #{definition.disk_variant.downcase}"
+            command ="#{@vboxcmd} createhd --filename \"#{File.join(place,name,disk[:name]+"."+disk[:format].downcase)}\" --size \"#{disk[:size].to_i}\" --format #{disk[:format].downcase} --variant #{disk[:variant].downcase}"
             shell_exec("#{command}")
-
+          end
         end
 
         def attach_disk_common(storagectl, device_number)
+          disk = definition.disks[device_number]
           place=get_vbox_home
-          location=name+"."+definition.disk_format.downcase
+          location=disk[:name]+"."+disk[:format].downcase
 
           location="#{File.join(place,name,location)}"
           ui.info "Attaching disk: #{location}"
@@ -96,11 +98,11 @@ module Veewee
           shell_exec("#{command}")
         end
 
-        def attach_disk_ide(device_number=0)
+        def attach_disk_ide(device_number)
           self.attach_disk_common("IDE Controller", device_number)
         end
 
-        def attach_disk_sata(device_number=0)
+        def attach_disk_sata(device_number)
           self.attach_disk_common("SATA Controller", device_number)
         end
 

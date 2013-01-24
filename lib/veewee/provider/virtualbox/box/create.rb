@@ -26,8 +26,8 @@ module Veewee
           # Adds a folder to the vm for testing purposes
           self.add_shared_folder
 
-          #Create a disk with the same name as the box_name
-          self.create_disk
+          # Create a disk 
+          self.create_disks
 
           use_sata = definition.use_sata
           if use_sata
@@ -35,15 +35,19 @@ module Veewee
             isofile_ide_device_number = 0
           else
             disk_device_number = 0
-            isofile_ide_device_number = 1
+            isofile_ide_device_number = definition.disks.size
           end
 
           self.add_ide_controller
           if use_sata
             self.add_sata_controller
-            self.attach_disk_sata(disk_device_number)
+            definition.disks.each_with_index do |disk, i|
+              self.attach_disk_sata(0)
+            end
           else
-            self.attach_disk_ide(disk_device_number)
+            definition.disks.each_with_index do |disk, i|
+              self.attach_disk_ide(i)
+            end
           end
           self.attach_isofile(isofile_ide_device_number)
           self.attach_guest_additions
